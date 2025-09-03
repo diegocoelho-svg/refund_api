@@ -38,6 +38,10 @@ class RefundsController {
 
     response.status(201).json(refund)
   }
+
+  async index(requesT: Request, response: Response) {
+    response.json({ message: "ok" })
+  }
 }
 
 export { RefundsController }
