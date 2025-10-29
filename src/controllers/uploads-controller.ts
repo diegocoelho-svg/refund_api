@@ -10,6 +10,10 @@ class UploadsController {
     const diskStorage = new DiskStorage()
 
     try {
+      if(!request.file) {
+        throw new AppError("Arquivo não foi enviado")
+      }
+
       const fileSchema = z.object({
         filename: z.string().min(1, { message: "Arquivo é obrigatório" }),
         mimetype: z.string().refine((type) => uploadConfig.ACCEPTED_IMAGE_TYPES.includes(type), { message: `Formato de arquivo inválido. Formatos permitidos: ${uploadConfig.ACCEPTED_IMAGE_TYPES}` }),
@@ -26,7 +30,7 @@ class UploadsController {
       const file = fileSchema.parse(request.file)
       const filename = await diskStorage.saveFile(file.filename)
 
-      response.json(filename)
+      response.json({ filename })
     } catch (error) {
       if (error instanceof ZodError) {
         if (request.file) {
